@@ -1,0 +1,7 @@
+Circuit/*/*-backups/
+Circuit/*/output
+Circuit/*/production
+Circuit/*/*.csv
+
+fp-info-cache
+*kleplace.log

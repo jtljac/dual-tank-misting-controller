@@ -1,0 +1,72 @@
+esphome:
+  name: office-misting-esp
+  friendly_name: office-misting-esp
+
+esp32:
+  board: firebeetle32
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "CHANGEME"
+
+ota:
+  - platform: esphome
+    password: "CHANGEME"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  use_address: CHANGEME
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: " Fallback Hotspot"
+    password: "CHANGEME"
+
+script:
+  - id: pump_auto_off
+    mode: restart
+    then:
+      - delay: 30 seconds
+      - switch.turn_off: pump
+
+switch:
+  - platform: gpio
+    id: pump
+    icon: "mdi:pump"
+    name: "Pump"
+    pin:
+      number: 17
+      inverted: true
+    on_turn_on:
+      - script.execute: pump_auto_off
+
+sensor:
+  - platform: ultrasonic
+    trigger_pin: 14
+    echo_pin: 13
+    name: "Water Level"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    filters:
+      - calibrate_linear:
+        - 0.164 -> 0
+        - 0.133 -> 20
+        - 0.097 -> 40
+        - 0.069 -> 60
+        - 0.036 -> 80
+        - 0.004 -> 100
+      - clamp:
+          min_value: 0
+          max_value: 100
+      - lambda: |-
+          if (isnan(x)) {
+            return 100;
+          };
+          return x;
