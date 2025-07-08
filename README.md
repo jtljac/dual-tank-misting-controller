@@ -8,3 +8,7 @@ has an associate voltage selector header as they're supposed to be 5v but my che
 
 The board is powered using a 24V DC Barrel Jack and powers the pump and solenoids directly. This design has sized 
 components and traces for 3A, which is generous for the required current for the ESP, pump, and two solenoids.
+
+![V1 Board](./Images/board.png)
+
+![V1 Board Front Only](./Images/front.png)
